@@ -1,17 +1,21 @@
 import * as restify from "restify";
 import * as docDbClient from "documentdb";
 import * as constants from "../tools/constants";
-import * as authGenerotor from "../tools/generateAuth";
+import * as authGenerator from "../tools/generateAuth";
 import * as https from "https";
+import * as strings from "../tools/resources/strings"
 
 const date : string = new Date().toUTCString();
 
 export function post(req: restify.Request, res: restify.Response, next: restify.Next) {
-        validateRequest(req).then((msg) => {
-            const authorization = authGenerotor.getAuthorizationUsingMasterKey("POST", constants.ResourceId, "docs", 
-                date, constants.MasterKey);
+        validateRequest(req).then(() => {
+            const database = req.headers['x-ms-dbs'];
+            const collection = req.headers['x-ms-colls'];
+            const masterkey = constants.MasterKey || req.headers['x-ms-masterkey'];
+            const authorization = authGenerator.getAuthorizationUsingMasterKey("POST", '/dbs/${database}/colls/${collection}/docs', 'docs', 
+                date, masterkey);
             
-            let options = setOptions(authorization, req.body);
+            let options = setOptions(authorization || req.headers['x-ms-masterkey'], database, collection, req.body);
             //Make the outgoing request to docDb
             const outgoing_req = https.request(options, (outgoing_res) => {
 
@@ -36,25 +40,11 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
         next();
     };
 
-function validateRequest(req: restify.Request) : Promise<string> {
-    let p = new Promise<string>((resolve, reject) => {
-        if(typeof req.params.id == 'string' || req.params.id instanceof String)
-            if(constants.ResourceId && constants.MasterKey)
-                resolve("validated");
-            else
-                reject(new Error('Missing environment variables: \
-                    These should go in your App Settings under `resourceId` and `masterKey`.'));
-        else
-            reject(new Error("invalid ID type - must be a string"));
-    });
-    return p;
-}
-
-function setOptions(auth: string, post_data) : https.RequestOptions {
+function setOptions(auth: string, database : string, collection : string, post_data) : https.RequestOptions {
     let options : https.RequestOptions = {
-        hostname: '<db>.documents.azure.com',
+        hostname: `jehollan.documents.azure.com`,
         port: 443,
-        path: '/dbs/<db>Dev/colls/test/docs',
+        path: `/dbs/${database}/colls/${collection}/docs`,
         method: 'post',
         headers: {
             Authorization: auth,
@@ -66,4 +56,26 @@ function setOptions(auth: string, post_data) : https.RequestOptions {
         }
     }
     return options;
+}
+
+function validateRequest(req: restify.Request) : Promise<void> {
+    let p = new Promise<void>((resolve, reject) => {
+        //Check masterkey
+        if(!req.headers['x-ms-masterkey']) {
+            reject(strings.err_missing_master_key);
+        }
+        //Check database
+        if(!req.headers['x-ms-dbs'])
+            reject(strings.err_missing_dbs_header);
+        //Check colletion
+        if(!req.headers['x-ms-colls'])
+            reject(strings.err_missing_colls_header);
+        //Check body
+        if(typeof req.body == 'string' || Array.isArray(req.body))
+            reject(strings.err_invalid_json_body(req.body));
+        
+        resolve();
+            
+    });
+    return p;
 }

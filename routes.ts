@@ -6,5 +6,6 @@ export function setRoutes(server) {
         server.get('/echo/:message', echo.get);
         server.get('/echo', echo.get);
         server.post('/docs', document.post);
+        server.post('/docs/', document.post);
         console.log('set routes...');
     }

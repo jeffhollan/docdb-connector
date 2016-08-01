@@ -10,7 +10,6 @@ export function getAuthorizationUsingMasterKey(verb : string, resourceId : strin
                (resourceId || "") + "\n" + 
                (date || "").toLowerCase() + "\n" + 
                "" + "\n";
-    console.log(text);
 
     var body = new Buffer(text, "utf8");
     var signature = crypto.createHmac("sha256", key).update(body).digest("base64");
