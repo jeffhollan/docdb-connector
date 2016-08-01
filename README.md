@@ -1,5 +1,5 @@
-# TypeScript Restify API App
+# DocDB Connector
 
-Sample Restify API with Typescript
+TypeScript DocDB connector using restify and mocha
 
-Wanted to explore using VS Code, Typescript, and Restify to create a typescript based node REST API.  These was the boilerplate I created to start with.
+Wanted to explore using VS Code, Typescript, and Restify to create a typescript based node REST API.  This was the first API app I started to write

@@ -12,6 +12,7 @@ server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 server.pre(restify.pre.sanitizePath());
+server.use(restify.dateParser());
 
 //call the routes.ts file for available REST API routes
 console.log('setting routes...');
