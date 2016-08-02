@@ -30,7 +30,7 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
 /**
  *  GET - get a document by index
  */
-export function get(req: restify.Request, res: restify.Response, next: restify.Next) {
+export function getOrDel(req: restify.Request, res: restify.Response, next: restify.Next) {
     validateRequest(req, false).then(() => {
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}/docs/${req.params.id}`;
@@ -43,18 +43,23 @@ export function get(req: restify.Request, res: restify.Response, next: restify.N
         res.send(400, err);
     });
     next();
-};
+}
 
 function http_request(req, res, options) {
     const outgoing_req = https.request(options, (outgoing_res) => {
+        
+        let data = null;
         outgoing_res.setEncoding('utf8');
+
         // When a successful response is recieved
         outgoing_res.on('data', (d) => {
-            res.send(outgoing_res.statusCode, JSON.parse(d), outgoing_res.headers);
+           data = JSON.parse(d);
         });
+        outgoing_res.on('end', () => {
+            res.send(outgoing_res.statusCode, data, outgoing_res.headers);
+        })
     });
     outgoing_req.end(JSON.stringify(req.body));
-
     //If the request to docDB fails
     outgoing_req.on('error', (e) => {
         res.send(400, e.toString());
