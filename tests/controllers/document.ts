@@ -195,34 +195,6 @@ describe('controllers', function () {
         });
 
          describe('delete', function () {
-            it('should not allow multiple paths', function(done){
-                request(app.server)
-                    .del('/docs/12345/abc')
-                    .set('x-ms-masterkey', '1234567890')
-                    .set('x-ms-dbs', 'testingDB')
-                    .set('x-ms-colls', 'testingColls')
-                    .set('x-ms-account', 'test')
-                    .expect(404)
-                    .end(function (err, res) {
-                        should.not.exist(err);
-                        done();
-                    });
-            });
-
-            it('should require id path', function(done){
-                request(app.server)
-                    .del('/docs/')
-                    .set('x-ms-masterkey', '1234567890')
-                    .set('x-ms-dbs', 'testingDB')
-                    .set('x-ms-colls', 'testingColls')
-                    .set('x-ms-account', 'test')
-                    .expect(405)
-                    .end(function (err, res) {
-                        should.not.exist(err);
-                        done();
-                    });
-            });
-
             it('should return 204', function(done){
                 configureNock();
                 request(app.server)
@@ -235,6 +207,24 @@ describe('controllers', function () {
                     .end(function (err, res) {
                         should.not.exist(err);
                         res.body.should.be.empty();
+                        done();
+                    });
+            });
+        });
+
+        describe('put', function () {
+            it('should return 204', function(done){
+                configureNock();
+                request(app.server)
+                    .put('/docs/test')
+                    .set('x-ms-masterkey', '1234567890')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test')
+                    .expect(200)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        res.body.id.should.equal('_SalesOrder5');
                         done();
                     });
             });
@@ -255,4 +245,8 @@ function configureNock() {
     nock('https://test.documents.azure.com')
         .delete(/docs\/test$/)
         .reply(204, null);
+
+    nock('https://test.documents.azure.com')
+        .put(/docs\/test$/)
+        .reply(200, resources.sample_put_doc_response);
 }

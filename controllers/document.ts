@@ -9,7 +9,7 @@ import * as model_docs from "../models/doc";
 const date: string = new Date().toUTCString();
 
 /**
- *  POST - create a document in a docDB database.
+ *  POST - create a document
  */
 export function post(req: restify.Request, res: restify.Response, next: restify.Next) {
     validateRequest(req, true).then(() => {
@@ -44,6 +44,25 @@ export function getOrDel(req: restify.Request, res: restify.Response, next: rest
     });
     next();
 }
+
+/**
+ *  PUT - replace a document by index
+ */
+export function put(req: restify.Request, res: restify.Response, next: restify.Next) {
+    validateRequest(req, true).then(() => {
+        const request_params = generateRequestParams(req);
+        const path = `dbs/${request_params.database}/colls/${request_params.collection}/docs/${req.params.id}`;
+        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const options = setOptions('/' + path, req.method, request_params.account, authorization, req.body);
+        //Make the outgoing request to PUT doc
+        http_request(req, res, options);
+    })
+        //If validation fails
+        .catch((err) => {
+            res.send(400, err);
+        });
+    next();
+};
 
 function http_request(req, res, options) {
     const outgoing_req = https.request(options, (outgoing_res) => {

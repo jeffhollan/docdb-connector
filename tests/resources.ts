@@ -61,3 +61,18 @@ export const sample_get_doc_response : Object = {
   "_ts": 1459216987,
   "_attachments": "attachments/"
 }
+
+export const sample_put_doc_response : Object = {
+  "id": "_SalesOrder5",
+  "AccountNumber": "NewUser01",
+  "PurchaseOrderNumber": "PO18009186470",
+  "OrderDate": "2016-03-29T02:03:07.3526153Z",
+  "Total": 5.95,
+  "_rid": "d9RzAJRFKgwEAAAAAAAAAA==",
+  "_self": "dbs/d9RzAA==/colls/d9RzAJRFKgw=/docs/d9RzAJRFKgwEAAAAAAAAAA==/",
+  "_etag": "\"0000df86-0000-0000-0000-56f9e25c0000\"",
+  "_ts": 1459216988,
+  "_attachments": "attachments/",
+  "shippedDate": "2016-03-29T02:03:07.4680723Z",
+  "foo": "bar"
+}
