@@ -1,0 +1,233 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.1.0",
+        "title": "Azure DocumentDB Connector"
+    },
+    "host": "localhost:51234",
+    "paths": {
+        "/docs/{id}": {
+            "get": {
+                "description": "Gets a document from docDB by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the document",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "x-ms-masterkey",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Primary or Secondary Key",
+                        "required": false
+                    },
+                    {
+                        "name": "x-ms-dbs",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Database name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-colls",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Collections name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Account name",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved document",
+                        "schema": {
+                            "$ref": "#/definitions/document"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Replace a document",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the document",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "x-ms-masterkey",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Primary or Secondary Key",
+                        "required": false
+                    },
+                    {
+                        "name": "x-ms-dbs",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Database name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-colls",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Collections name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Account name",
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retrieved document",
+                        "schema": {
+                            "$ref": "#/definitions/document"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a document from docDB by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the document",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "x-ms-masterkey",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Primary or Secondary Key",
+                        "required": false
+                    },
+                    {
+                        "name": "x-ms-dbs",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Database name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-colls",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Collections name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Account name",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Accepted"
+                    }
+                }
+            }
+        },
+        "/docs": {
+            "post": {
+                "description": "Create a document",
+                "parameters": [
+                    {
+                        "name": "x-ms-masterkey",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Primary or Secondary Key",
+                        "required": false
+                    },
+                    {
+                        "name": "x-ms-dbs",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Database name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-colls",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Collections name",
+                        "required": true
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "description": "Account name",
+                        "required": true
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created document",
+                        "schema": {
+                            "$ref": "#/definitions/document"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "document": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Identifier of the document"
+                }
+            },
+            "additionalProperties": {
+                "type": [
+                    "string",
+                    "boolean",
+                    "number",
+                    "object",
+                    "array"
+                ]
+            },
+            "required": [
+                "id"
+            ]
+        }
+    }
+}
