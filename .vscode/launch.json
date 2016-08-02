@@ -15,9 +15,7 @@
                 "--nolazy"
             ],
             "env": {
-                "NODE_ENV": "development",
-                "resourceId": "<resourceId>",
-                "masterKey": "<master-key>"
+                "NODE_ENV": "development"
             },
             "externalConsole": false,
             "sourceMaps": true,

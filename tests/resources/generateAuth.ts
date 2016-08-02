@@ -1,6 +1,6 @@
 import * as request from "supertest";
 import * as should from "should";
-import * as generator from "../../tools/generateAuth";
+import * as generator from "../../resources/generateAuth";
 
 const resourceId : string = "/subscriptions/80d4fe69-1234-5678-9123-9250f1c8ab03/resourceGroups/myRG/providers/Microsoft.DocumentDB/databaseAccounts/myDb";
 const resourceType : string = "docs";
@@ -8,7 +8,7 @@ const masterKey : string = "wzdwMTS70xomt8Xz61Jr1ZgLLrrm4bkv3o2WrqUcPre5eOk0C4Gl
 const date : string = new Date().toUTCString();
 
 
-describe('tools', function() {
+describe('resources', function() {
     describe('generateAuth', function(){
         it('generates token without date', function(done){
             
