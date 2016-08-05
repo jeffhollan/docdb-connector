@@ -229,6 +229,40 @@ describe('controllers', function () {
                     });
             });
         });
+
+        describe('upsert', function () {
+            it('should return 201', function(done){
+                configureNock();
+                request(app.server)
+                    .put('/docs')
+                    .set('x-ms-masterkey', '1234567890')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test')
+                    .expect(201)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        res.body.id.should.equal('AndersenFamily');
+                        done();
+                    });
+            });
+            it('should have upsert headers', function(done){
+                configureNock();
+                request(app.server)
+                    .put('/docs')
+                    .set('x-ms-masterkey', '1234567890')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test')
+                    .expect(201)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        res.body.id.should.equal('AndersenFamily');
+                        res.header['x-ms-documentdb-is-upsert'].should.equal('true');
+                        done();
+                    });
+            });
+        });
     });
 });
 
@@ -236,7 +270,7 @@ describe('controllers', function () {
 function configureNock() {
     nock('https://test.documents.azure.com')
         .post(/docs$/)
-        .reply(201, resources.sample_create_doc_response);
+        .reply(201, resources.sample_post_doc_response);
     
     nock('https://test.documents.azure.com')
         .get(/docs\/test$/)
@@ -249,4 +283,39 @@ function configureNock() {
     nock('https://test.documents.azure.com')
         .put(/docs\/test$/)
         .reply(200, resources.sample_put_doc_response);
+
+    nock('https://test.documents.azure.com')
+        .put(/docs$/)
+        .reply(function(uri, requestBody, cb){
+            cb(null, [200, {}, {}]);
+        });
+
+        var scope = nock('http://www.google.com')
+   .filteringRequestBody(/.*/, '*')
+   .post('/echo', '*')
+   .reply(function(uri, requestBody) {
+     return [
+       201,
+       'THIS IS THE REPLY BODY',
+       {'header': 'value'} // optional headers
+     ];
+   });
+
+var scope = nock('http://www.google.com')
+   .filteringRequestBody(/.*/, '*')
+   .post('/echo', '*')
+   .reply(function(uri, requestBody, cb) {
+     setTimeout(function() {
+       cb(null, [201, 'THIS IS THE REPLY BODY'])
+     }, 1e3);
+   });
+
+   var scope = nock('http://www.google.com')
+   .get('/cat-poems')
+   .reply(function(uri, requestBody) {
+     console.log('path:', this.req.path);
+     console.log('headers:', this.req.headers);
+     // ...
+   });
+   
 }

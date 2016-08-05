@@ -15,8 +15,13 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
     validateRequest(req, true).then(() => {
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}`;
+
         const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
-        const options = setOptions('/' + path + '/docs', req.method, request_params.account, authorization, req.body);
+        let options = setOptions('/' + path + '/docs', req.method, request_params.account, authorization, req.body);
+
+        if(req.header['x-ms-documentdb-is-upsert'])
+            options.headers['x-ms-documentdb-is-upsert'] = true;
+
         //Make the outgoing request to docDb
         http_request(req, res, options);
     })
@@ -26,6 +31,14 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
         });
     next();
 };
+
+/**
+ *  POST - Upsert a document
+ */
+export function upsert(req: restify.Request, res: restify.Response, next: restify.Next) {
+    req.header['x-ms-documentdb-is-upsert'] = true;
+    post(req, res, next);
+}
 
 /**
  *  GET - get a document by index

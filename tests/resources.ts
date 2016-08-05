@@ -1,4 +1,4 @@
-export const sample_create_doc_response : Object = {
+export const sample_post_doc_response : Object = {
   "id": "AndersenFamily",
   "LastName": "Andersen",
   "Parents": [

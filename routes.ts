@@ -7,4 +7,6 @@ export function setRoutes(server) {
         server.get('/docs/:id', document.getOrDel);
         server.del('/docs/:id', document.getOrDel);
         server.put('/docs/:id', document.put);
+        server.put('/docs', document.upsert);
+        server.put('/docs/', document.upsert);
     }
