@@ -76,3 +76,56 @@ export const sample_put_doc_response : Object = {
   "shippedDate": "2016-03-29T02:03:07.4680723Z",
   "foo": "bar"
 }
+
+export const sample_query_request : Object = {
+  "query": "SELECT * FROM Families f WHERE f.id = @id AND f.Address.City = @city",
+  "parameters": [
+    {
+      "name": "@id",
+      "value": "QuerySample"
+    },
+    {
+      "name": "@city",
+      "value": "Seattle"
+    }
+  ]
+}
+
+export const sample_query_response : Object = {
+  "id": "QuerySample",
+  "LastName": "Andersen",
+  "Parents": [
+    {
+      "FamilyName": null,
+      "FirstName": "Thomas"
+    },
+    {
+      "FamilyName": null,
+      "FirstName": "Mary Kay"
+    }
+  ],
+  "Children": [
+    {
+      "FamilyName": null,
+      "FirstName": "Henriette Thaulow",
+      "Gender": "female",
+      "Grade": 5,
+      "Pets": [
+        {
+          "GivenName": "Fluffy"
+        }
+      ]
+    }
+  ],
+  "Address": {
+    "State": "WA",
+    "County": "King",
+    "City": "Seattle"
+  },
+  "IsRegistered": true,
+  "_rid": "1KtjAImkcgwBAAAAAAAAAA==",
+  "_self": "dbs/1KtjAA==/colls/1KtjAImkcgw=/docs/1KtjAImkcgwBAAAAAAAAAA==/",
+  "_etag": "\"00003200-0000-0000-0000-56f9e84d0000\"",
+  "_ts": 1459218509,
+  "_attachments": "attachments/"
+}

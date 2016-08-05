@@ -1,7 +1,6 @@
 {
   "globalDependencies": {
     "bunyan": "registry:dt/bunyan#0.0.0+20160412155112",
-    "documentdb": "registry:dt/documentdb#0.0.0+20160316155526",
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "node": "registry:dt/node#6.0.0+20160801161248",
     "restify": "registry:dt/restify#2.0.0+20160726153409",
@@ -10,6 +9,6 @@
     "supertest": "registry:dt/supertest#1.1.0+20160724070541"
   },
   "dependencies": {
-    "nock": "registry:npm/nock#0.7.0+20160723033700"
+    "nock": "github:jeffhollan/npm-nock#6856b7b4375e7c97997271204470e1cbb57a02d4"
   }
 }

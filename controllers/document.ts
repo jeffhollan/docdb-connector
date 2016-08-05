@@ -1,5 +1,4 @@
 import * as restify from "restify";
-import * as docDbClient from "documentdb";
 import * as constants from "../resources/constants";
 import * as authGenerator from "../resources/generateAuth";
 import * as https from "https";
@@ -33,10 +32,11 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
 };
 
 /**
- *  POST - Upsert a document
+ *  POST - Upsert a document - called from a PUT /docs on client
  */
 export function upsert(req: restify.Request, res: restify.Response, next: restify.Next) {
     req.header['x-ms-documentdb-is-upsert'] = true;
+    req.method = 'POST';
     post(req, res, next);
 }
 
@@ -76,6 +76,27 @@ export function put(req: restify.Request, res: restify.Response, next: restify.N
         });
     next();
 };
+
+/**
+ *  POST - query for documents - client calls via POST on /query/docs
+ */
+export function query(req: restify.Request, res: restify.Response, next: restify.Next) {
+    validateRequest(req, true)
+    .then(()=> {
+        const request_params = generateRequestParams(req);
+        const path = `dbs/${request_params.database}/colls/${request_params.collection}`;
+        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const options = setOptions('/' + path + '/docs', req.method, request_params.account, authorization, req.body);
+        options.headers['x-ms-documentdb-isquery'] = true;
+        options.headers['Content-Type'] = "application/query+json";
+        // Make the outgoing reqest to POST query
+        http_request(req, res, options);
+    })
+    .catch((err) => {
+        res.send(400, err);
+    });
+    next();
+}
 
 function http_request(req, res, options) {
     const outgoing_req = https.request(options, (outgoing_res) => {

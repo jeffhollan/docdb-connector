@@ -246,19 +246,55 @@ describe('controllers', function () {
                         done();
                     });
             });
-            it('should have upsert headers', function(done){
+            it('should have upsert headers and method', function(done){
                 configureNock();
                 request(app.server)
                     .put('/docs')
                     .set('x-ms-masterkey', '1234567890')
                     .set('x-ms-dbs', 'testingDB')
                     .set('x-ms-colls', 'testingColls')
-                    .set('x-ms-account', 'test')
+                    .set('x-ms-account', 'test-upsert')
                     .expect(201)
                     .end(function (err, res) {
                         should.not.exist(err);
-                        res.body.id.should.equal('AndersenFamily');
+                        res.body.id.should.equal('UpsertId');
                         res.header['x-ms-documentdb-is-upsert'].should.equal('true');
+                        done();
+                    });
+            });
+        });
+
+        describe('query', function () {
+            it('should return 201', function(done){
+                configureNock();
+                request(app.server)
+                    .post('/query/docs')
+                    .set('x-ms-masterkey', '1234567890')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test-query')
+                    .send(resources.sample_query_request)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        res.body.id.should.equal('QuerySample');
+                        done();
+                    });
+            });
+            it('should have query headers', function(done){
+                configureNock();
+                request(app.server)
+                    .post('/query/docs')
+                    .set('x-ms-masterkey', '1234567890')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test-query')
+                    .send(resources.sample_query_request)
+                    .expect(201)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        res.body.id.should.equal('QuerySample');
+                        res.body['isquery'].should.equal(true);
+                        res.body['content-type'].should.equal('application/query+json');
                         done();
                     });
             });
@@ -284,38 +320,21 @@ function configureNock() {
         .put(/docs\/test$/)
         .reply(200, resources.sample_put_doc_response);
 
-    nock('https://test.documents.azure.com')
-        .put(/docs$/)
-        .reply(function(uri, requestBody, cb){
-            cb(null, [200, {}, {}]);
+    nock('https://test-upsert.documents.azure.com')
+        .post(/docs$/)
+        .reply(function(uri, requestBody){
+            let response = resources.sample_post_doc_response;
+            response['id'] = "UpsertId";
+            return [201, response, this.req.headers];
         });
 
-        var scope = nock('http://www.google.com')
-   .filteringRequestBody(/.*/, '*')
-   .post('/echo', '*')
-   .reply(function(uri, requestBody) {
-     return [
-       201,
-       'THIS IS THE REPLY BODY',
-       {'header': 'value'} // optional headers
-     ];
-   });
-
-var scope = nock('http://www.google.com')
-   .filteringRequestBody(/.*/, '*')
-   .post('/echo', '*')
-   .reply(function(uri, requestBody, cb) {
-     setTimeout(function() {
-       cb(null, [201, 'THIS IS THE REPLY BODY'])
-     }, 1e3);
-   });
-
-   var scope = nock('http://www.google.com')
-   .get('/cat-poems')
-   .reply(function(uri, requestBody) {
-     console.log('path:', this.req.path);
-     console.log('headers:', this.req.headers);
-     // ...
-   });
+    nock('https://test-query.documents.azure.com')
+        .post(/docs$/)
+        .reply(function(uri, requestBody){
+            let response = resources.sample_query_response;
+            response['isquery'] = this.req.headers['x-ms-documentdb-isquery'];
+            response['content-type'] = this.req.headers['content-type'];
+            return [201, response, {"content-type": "application/json"}];
+        });
    
 }

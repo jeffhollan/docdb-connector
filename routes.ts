@@ -9,4 +9,6 @@ export function setRoutes(server) {
         server.put('/docs/:id', document.put);
         server.put('/docs', document.upsert);
         server.put('/docs/', document.upsert);
+        server.post('/query/docs', document.query);
+        server.post('/query/docs/', document.query);
     }
