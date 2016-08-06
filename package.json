@@ -4,10 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "mocha test --recursive tests && exit 1",
+    "test": "mocha --recursive",
     "start": "node app.js",
     "build": "tsc",
-    "prepublish": "typings install && npm run build"
+    "prepublish": "typings install && npm run build",
+    "pretest": "tsc"
   },
   "author": "",
   "license": "MIT",

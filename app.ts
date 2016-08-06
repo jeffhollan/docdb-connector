@@ -7,6 +7,8 @@ export const server = restify.createServer({
     version: '0.1.0'
 });
 
+const port = process.env.PORT || 54321;
+
 //parsing settings
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
@@ -18,7 +20,7 @@ server.use(restify.dateParser());
 routes.setRoutes(server);
 
 //when running the app will listen locally to port 51234
-server.listen(51234, function() {
+server.listen(port, function() {
     console.log('%s listening at %s', server.name, server.url);
 })
 

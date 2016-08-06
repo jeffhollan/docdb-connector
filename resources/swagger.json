@@ -4,7 +4,7 @@
         "version": "0.1.0",
         "title": "Azure DocumentDB Connector"
     },
-    "host": "localhost:51234",
+    "host": "<host>",
     "paths": {
         "/docs/{id}": {
             "get": {

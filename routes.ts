@@ -1,4 +1,5 @@
 import * as document from "./controllers/document";
+import * as swagger from "./controllers/swagger"
 
 export function setRoutes(server) {
     // Document operations
@@ -11,4 +12,6 @@ export function setRoutes(server) {
         server.put('/docs/', document.upsert);
         server.post('/query/docs', document.query);
         server.post('/query/docs/', document.query);
+
+        server.get('/swagger', swagger.get );
     }
