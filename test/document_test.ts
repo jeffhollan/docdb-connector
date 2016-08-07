@@ -1,8 +1,8 @@
-import * as app from "../../app";
+import * as app from "../app";
 import * as request from "supertest";
 import * as should from "should";
-import * as strings from "../../resources/strings";
-import * as resources from "../resources";
+import * as strings from "../resources/strings";
+import * as resources from "./resources";
 import * as nock from "nock";
 
 describe('controllers', function () {
@@ -26,6 +26,7 @@ describe('controllers', function () {
             });
 
             it('should require masterkey', function (done) {
+                delete process.env.masterkey;
                 request(app.server)
                     .post('/docs')
                     .expect(400)
@@ -78,6 +79,26 @@ describe('controllers', function () {
                         done();
                     });
 
+            });
+
+            it('should allow masterkey from env variable', function (done) {
+                configureNock();
+                let test_input = { "id": "test-create-doc" }
+                process.env.masterkey = 'testing-create';
+                request(app.server)
+                    .post('/docs')
+                    // .set('x-ms-masterkey', 'testing-create')
+                    .set('x-ms-dbs', 'testingDB')
+                    .set('x-ms-colls', 'testingColls')
+                    .set('x-ms-account', 'test')
+                    .send(test_input)
+                    .expect(201)
+                    .end(function (err, res) {
+                        should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
+                        res.body.id.should.equal('AndersenFamily');
+                        done();
+                    });
             });
         });
         describe('post', function () {
@@ -143,6 +164,7 @@ describe('controllers', function () {
                     .expect(201)
                     .end(function (err, res) {
                         should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
                         res.body.id.should.equal('AndersenFamily');
                         done();
                     });
@@ -188,6 +210,7 @@ describe('controllers', function () {
                     .expect(200)
                     .end(function (err, res) {
                         should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
                         res.body.id.should.equal('SalesOrder1');
                         done();
                     });
@@ -224,6 +247,7 @@ describe('controllers', function () {
                     .expect(200)
                     .end(function (err, res) {
                         should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
                         res.body.id.should.equal('_SalesOrder5');
                         done();
                     });
@@ -242,6 +266,7 @@ describe('controllers', function () {
                     .expect(201)
                     .end(function (err, res) {
                         should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
                         res.body.id.should.equal('AndersenFamily');
                         done();
                     });
@@ -257,8 +282,9 @@ describe('controllers', function () {
                     .expect(201)
                     .end(function (err, res) {
                         should.not.exist(err);
+                        should.exist(res.header['x-ms-doc-id']);
                         res.body.id.should.equal('UpsertId');
-                        res.header['x-ms-documentdb-is-upsert'].should.equal('true');
+                        res.body['x-ms-documentdb-is-upsert'].should.equal(true);
                         done();
                     });
             });
@@ -276,7 +302,8 @@ describe('controllers', function () {
                     .send(resources.sample_query_request)
                     .end(function (err, res) {
                         should.not.exist(err);
-                        res.body.id.should.equal('QuerySample');
+                        should.not.exist(res.header['x-ms-doc-id']);
+                        res.body.Documents[0].id.should.equal('test-query');
                         done();
                     });
             });
@@ -292,7 +319,8 @@ describe('controllers', function () {
                     .expect(201)
                     .end(function (err, res) {
                         should.not.exist(err);
-                        res.body.id.should.equal('QuerySample');
+                        should.not.exist(res.header['x-ms-doc-id']);
+                        res.body.Documents[0].id.should.equal('test-query');
                         res.body['isquery'].should.equal(true);
                         res.body['content-type'].should.equal('application/query+json');
                         done();
@@ -325,6 +353,7 @@ function configureNock() {
         .reply(function(uri, requestBody){
             let response = resources.sample_post_doc_response;
             response['id'] = "UpsertId";
+            response['x-ms-documentdb-is-upsert'] = this.req.headers['x-ms-documentdb-is-upsert'];
             return [201, response, this.req.headers];
         });
 

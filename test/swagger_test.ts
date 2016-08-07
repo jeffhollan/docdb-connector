@@ -1,4 +1,4 @@
-import * as app from "../../app";
+import * as app from "../app";
 import * as request from "supertest";
 import * as should from "should";
 

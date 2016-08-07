@@ -7,7 +7,7 @@ export const server = restify.createServer({
     version: '0.1.0'
 });
 
-const port = process.env.PORT || 54321;
+const port = process.env.port || 8000;
 
 //parsing settings
 server.use(restify.acceptParser(server.acceptable));

@@ -1,6 +1,5 @@
 import * as restify from "restify";
-import * as constants from "../resources/constants";
-import * as authGenerator from "../resources/generateAuth";
+import * as utils from "../resources/utils";
 import * as https from "https";
 import * as strings from "../resources/strings"
 import * as model_docs from "../models/doc";
@@ -15,10 +14,10 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}`;
 
-        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const authorization = utils.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, utils.getMasterKey(req));
         let options = setOptions('/' + path + '/docs', req.method, request_params.account, authorization, req.body);
 
-        if(req.header['x-ms-documentdb-is-upsert'])
+        if(req.header('x-ms-documentdb-is-upsert'))
             options.headers['x-ms-documentdb-is-upsert'] = true;
 
         //Make the outgoing request to docDb
@@ -35,7 +34,7 @@ export function post(req: restify.Request, res: restify.Response, next: restify.
  *  POST - Upsert a document - called from a PUT /docs on client
  */
 export function upsert(req: restify.Request, res: restify.Response, next: restify.Next) {
-    req.header['x-ms-documentdb-is-upsert'] = true;
+    req.headers['x-ms-documentdb-is-upsert'] = true;
     req.method = 'POST';
     post(req, res, next);
 }
@@ -47,7 +46,7 @@ export function getOrDel(req: restify.Request, res: restify.Response, next: rest
     validateRequest(req, false).then(() => {
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}/docs/${req.params.id}`;
-        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const authorization = utils.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, utils.getMasterKey(req));
         const options = setOptions('/' + path, req.method, request_params.account, authorization);
         // Make the outgoing reqest to GET doc
         http_request(req, res, options);
@@ -65,7 +64,7 @@ export function put(req: restify.Request, res: restify.Response, next: restify.N
     validateRequest(req, true).then(() => {
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}/docs/${req.params.id}`;
-        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const authorization = utils.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, utils.getMasterKey(req));
         const options = setOptions('/' + path, req.method, request_params.account, authorization, req.body);
         //Make the outgoing request to PUT doc
         http_request(req, res, options);
@@ -85,7 +84,7 @@ export function query(req: restify.Request, res: restify.Response, next: restify
     .then(()=> {
         const request_params = generateRequestParams(req);
         const path = `dbs/${request_params.database}/colls/${request_params.collection}`;
-        const authorization = authGenerator.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, request_params.masterkey);
+        const authorization = utils.getAuthorizationUsingMasterKey(req.method, path, 'docs', date, utils.getMasterKey(req));
         const options = setOptions('/' + path + '/docs', req.method, request_params.account, authorization, req.body);
         options.headers['x-ms-documentdb-isquery'] = true;
         options.headers['Content-Type'] = "application/query+json";
@@ -109,7 +108,11 @@ function http_request(req, res, options) {
            data = JSON.parse(d);
         });
         outgoing_res.on('end', () => {
-            res.send(outgoing_res.statusCode, data, outgoing_res.headers);
+            let res_headers = {};
+            if(data && data['id']) {
+                res_headers['x-ms-doc-id'] = data['id'];
+            }
+            res.send(outgoing_res.statusCode, data, res_headers );
         })
     });
     outgoing_req.end(JSON.stringify(req.body));
@@ -143,17 +146,17 @@ function setOptions(path: string, method: string, account: string, auth: string,
 function validateRequest(req: restify.Request, hasBody: boolean): Promise<void> {
     let p = new Promise<void>((resolve, reject) => {
         //Check masterkey
-        if (!req.headers['x-ms-masterkey']) {
+        if (!utils.getMasterKey(req)) {
             reject(strings.err_missing_master_key);
         }
         //Check database
-        if (!req.headers['x-ms-dbs'])
+        if (!req.header('x-ms-dbs'))
             reject(strings.err_missing_dbs_header);
         //Check collection
-        if (!req.headers['x-ms-colls'])
+        if (!req.header('x-ms-colls'))
             reject(strings.err_missing_colls_header);
         //Check account
-        if (!req.headers['x-ms-account'])
+        if (!req.header('x-ms-account'))
             reject(strings.err_missing_account_header);
         //Check body
         if (hasBody && typeof req.body == 'string' || Array.isArray(req.body))
@@ -168,7 +171,6 @@ function generateRequestParams(req): model_docs.Document_Request {
     return {
         account: req.headers['x-ms-account'],
         database: req.headers['x-ms-dbs'],
-        collection: req.headers['x-ms-colls'],
-        masterkey: req.headers['x-ms-masterkey']
+        collection: req.headers['x-ms-colls']
     };
 }

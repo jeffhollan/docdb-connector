@@ -1,1 +1,0 @@
-export const MasterKey : string = process.env.masterKey;

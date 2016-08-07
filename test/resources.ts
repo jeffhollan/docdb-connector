@@ -91,41 +91,18 @@ export const sample_query_request : Object = {
   ]
 }
 
-export const sample_query_response : Object = {
-  "id": "QuerySample",
-  "LastName": "Andersen",
-  "Parents": [
+export const sample_query_response : Object ={
+  "_rid": "AYYGAI2BYwA=",
+  "Documents": [
     {
-      "FamilyName": null,
-      "FirstName": "Thomas"
-    },
-    {
-      "FamilyName": null,
-      "FirstName": "Mary Kay"
+      "foo": "bar",
+      "id": "test-query",
+      "_rid": "AYYGAI2BYwAlAAAAAAAAAA==",
+      "_self": "dbs/AYYGAA==/colls/AYYGAI2BYwA=/docs/AYYGAI2BYwAlAAAAAAAAAA==/",
+      "_etag": "\"030001c0-0000-0000-0000-57a6a3710000\"",
+      "_attachments": "attachments/",
+      "_ts": 1470538606
     }
   ],
-  "Children": [
-    {
-      "FamilyName": null,
-      "FirstName": "Henriette Thaulow",
-      "Gender": "female",
-      "Grade": 5,
-      "Pets": [
-        {
-          "GivenName": "Fluffy"
-        }
-      ]
-    }
-  ],
-  "Address": {
-    "State": "WA",
-    "County": "King",
-    "City": "Seattle"
-  },
-  "IsRegistered": true,
-  "_rid": "1KtjAImkcgwBAAAAAAAAAA==",
-  "_self": "dbs/1KtjAA==/colls/1KtjAImkcgw=/docs/1KtjAImkcgwBAAAAAAAAAA==/",
-  "_etag": "\"00003200-0000-0000-0000-56f9e84d0000\"",
-  "_ts": 1459218509,
-  "_attachments": "attachments/"
+  "_count": 1
 }

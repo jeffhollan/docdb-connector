@@ -1,0 +1,116 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "siteName": {
+      "type": "string"
+    },
+    "repoURL": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "svcPlanName": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "metadata": {
+        "description": "Describes plan's instance count"
+      }
+    }
+  },
+    "resources": [
+      {
+        "apiVersion": "2015-08-01",
+        "name": "[parameters('svcPlanName')]",
+        "type": "Microsoft.Web/serverfarms",
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "HostingPlan"
+        },
+        "sku": {
+          "name": "[parameters('sku')]",
+          "capacity": "[parameters('skuCapacity')]"
+        },
+        "properties": {
+          "name": "[parameters('svcPlanName')]"
+        }
+      },
+      {
+        "apiVersion": "2015-08-01",
+        "dependsOn": [
+          "[concat('Microsoft.Web/serverfarms/', parameters('svcPlanName'))]"
+        ],
+        "kind": "api",
+        "location": "[resourceGroup().location]",
+        "name": "[parameters('siteName')]",
+        "properties": {
+          "name": "[parameters('siteName')]",
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('svcPlanName'))]"
+        },
+        "resources": [
+          {
+            "apiVersion": "2015-08-01",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+            ],
+            "name": "web",
+            "properties": {
+              "RepoUrl": "[parameters('repoURL')]",
+              "branch": "[parameters('branch')]",
+              "IsManualIntegration": true
+            },
+            "type": "sourcecontrols"
+          },
+          {
+            "apiVersion": "2015-08-01",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+            ],
+            "name": "web",
+            "properties": {
+              "apiDefinition": {
+                "url": "[concat('https://', parameters('siteName'), '.azurewebsites.net/swagger')]"
+              },
+              "cors": {
+                "allowedOrigins": [
+                  "*"
+                ]
+              }
+            },
+            "type": "config"
+          }
+        ],
+        "tags": {
+          "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('svcPlanName'))]": "Resource",
+          "displayName": "Website"
+        },
+        "type": "Microsoft.Web/sites"
+      }
+    ]
+  }

@@ -8,20 +8,31 @@
     "paths": {
         "/docs/{id}": {
             "get": {
-                "description": "Gets a document from docDB by ID",
+                "operationId": "Get Document",
+                "description": "Gets a document by ID",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "description": "ID of the document",
+                        "x-ms-summary": "Document ID",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
                     },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -29,20 +40,15 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     }
                 ],
@@ -51,25 +57,43 @@
                         "description": "Retrieved document",
                         "schema": {
                             "$ref": "#/definitions/document"
+                        },
+                        "headers": {
+                            "x-ms-doc-id": {
+                                "description": "ID of the document",
+                                "x-ms-summary": "ID",
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "put": {
-                "description": "Replace a document",
+                "operationId": "Update Document",
+                "description": "Update a document",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "description": "ID of the document",
+                        "x-ms-summary": "Document ID",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
                     },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -77,20 +101,15 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     },
                     {
@@ -106,25 +125,43 @@
                         "description": "Retrieved document",
                         "schema": {
                             "$ref": "#/definitions/document"
+                        },
+                        "headers": {
+                            "x-ms-doc-id": {
+                                "description": "ID of the document",
+                                "x-ms-summary": "ID",
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Deletes a document from docDB by ID",
+                "operationId": "Delete Document",
+                "description": "Deletes a document",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "description": "ID of the document",
+                        "x-ms-summary": "Document ID",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
                     },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -132,20 +169,15 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     }
                 ],
@@ -158,13 +190,23 @@
         },
         "/docs": {
             "post": {
+                "operationId": "Create Document",
                 "description": "Create a document",
                 "parameters": [
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
+                    },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -172,20 +214,15 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     },
                     {
@@ -197,22 +234,39 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Created document",
                         "schema": {
                             "$ref": "#/definitions/document"
+                        },
+                        "headers": {
+                            "x-ms-doc-id": {
+                                "description": "ID of the document",
+                                "x-ms-summary": "ID",
+                                "type": "string"
+                            }
                         }
                     }
                 }
             },
             "put": {
+                "operationId": "Upsert Document",
                 "description": "Upsert a document",
                 "parameters": [
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
+                    },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -220,20 +274,15 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     },
                     {
@@ -245,24 +294,41 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Upserted document",
                         "schema": {
                             "$ref": "#/definitions/document"
+                        },
+                        "headers": {
+                            "x-ms-doc-id": {
+                                "description": "ID of the document",
+                                "x-ms-summary": "ID",
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/query/docs" : {
+        "/query/docs": {
             "post": {
-                "description": "Query for documents",
+                "operationId": "Query Documents",
+                "description": "DocumentDB SQL Query",
                 "parameters": [
+                    {
+                        "name": "x-ms-account",
+                        "in": "header",
+                        "type": "string",
+                        "x-ms-summary": "Account",
+                        "description": "Account name",
+                        "required": true
+                    },
                     {
                         "name": "x-ms-masterkey",
                         "in": "header",
                         "type": "string",
                         "description": "Primary or Secondary Key",
+                        "x-ms-summary": "Key",
                         "required": false
                     },
                     {
@@ -270,36 +336,50 @@
                         "in": "header",
                         "type": "string",
                         "description": "Database name",
+                        "x-ms-summary": "Database",
                         "required": true
                     },
                     {
                         "name": "x-ms-colls",
                         "in": "header",
                         "type": "string",
+                        "x-ms-summary": "Collection",
                         "description": "Collections name",
-                        "required": true
-                    },
-                    {
-                        "name": "x-ms-account",
-                        "in": "header",
-                        "type": "string",
-                        "description": "Account name",
                         "required": true
                     },
                     {
                         "name": "body",
                         "description": "A valid documentDb body",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object"
+                            "type": "object",
+                            "properties": {
+                                "query": {
+                                    "type": "string",
+                                    "description": "DocumentDB SQL Query"
+                                },
+                                "parameters": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "x-ms-summary": "Object Array",
+                                        "description": "Name/Value objects to substitue out for query",
+                                        "x-ms-visibility": "advanced"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "query"
+                            ]
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created document",
+                    "200": {
+                        "description": "Query response",
                         "schema": {
-                            "$ref": "#/definitions/document"
+                            "$ref": "#/definitions/queryResponse"
                         }
                     }
                 }
@@ -309,12 +389,6 @@
     "definitions": {
         "document": {
             "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "Identifier of the document"
-                }
-            },
             "additionalProperties": {
                 "type": [
                     "string",
@@ -323,37 +397,35 @@
                     "object",
                     "array"
                 ]
-            },
-            "required": [
-                "id"
-            ]
+            }
         },
-        "queryBody": {
+        "queryResponse": {
             "type": "object",
             "properties": {
-                "query": {
+                "_rid": {
                     "type": "string",
-                    "description": "Contains the SQL query text. For grammar, see Document DB SQl Grammar."
+                    "x-ms-summary": "Resource ID",
+                    "description": "The resource id for the collection used within the query.",
+                    "x-ms-visibility": "advanced"
                 },
-                "parameters": {
+                "_count": {
+                    "type": "integer",
+                    "description": "Number of documents returned",
+                    "x-ms-summary": "Count"
+                },
+                "Documents": {
                     "type": "array",
+                    "description": "Document set",
                     "items": {
-                        "type": "object",
-                        "properties" : {
-                            "name": {
-                                "type": "string",
-                                "description": "The name of the variable to substitute in query"
-                            },
-                            "value": {
-                                "type": "string",
-                                "description": "The value to substitue in for the parameter"
-                            }
-                        },
-                        "required": ["name", "value"]
+                        "$ref": "#/definitions/document"
                     }
                 }
             },
-            "required": [ "query", "parameters"]
+            "required": [
+                "_rid",
+                "_count",
+                "Documents"
+            ]
         }
     }
 }

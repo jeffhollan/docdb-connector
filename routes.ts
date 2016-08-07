@@ -14,4 +14,9 @@ export function setRoutes(server) {
         server.post('/query/docs/', document.query);
 
         server.get('/swagger', swagger.get );
+
+        server.get('/', function(req, res, next) {
+            res.send(`Azure DocumentDB Connector - swagger at https://${req.headers['host']}/swagger`);
+            next();
+        })
     }
