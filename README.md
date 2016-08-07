@@ -1,5 +1,7 @@
 # Azure DocumentDB Connector
 
+[![Build Status](https://travis-ci.org/jeffhollan/docdb-connector.svg?branch=master)](https://travis-ci.org/jeffhollan/docdb-connector)
+
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 This is a REST API Connector for [Azure DocumentDB](https://azure.microsoft.com/en-us/services/documentdb/) built to work with Azure Logic Apps.
