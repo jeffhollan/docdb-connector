@@ -7,8 +7,7 @@
     "test": "mocha",
     "start": "node app.js",
     "build": "tsc",
-    "prepublish": "typings install && npm run build",
-    "postinstall": "tsc"
+    "prepublish": "typings install && npm run build"
   },
   "author": "Jeff Hollan",
   "license": "MIT",
@@ -25,5 +24,9 @@
   },
   "engines": {
     "node": "^6.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeffhollan/docdb-connector.git"
   }
 }
